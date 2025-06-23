@@ -30,6 +30,17 @@ def generate_launch_description():
         parameters=[params]
     )
 
+    rviz_file = os.path.join(pkg_path, 'rviz', 'view.rviz')
+    rviz_node = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        arguments=['-d', rviz_file],
+        parameters=[{'use_sim_time': use_sim_time}],
+        output='screen'
+    )
+
+
 
     return LaunchDescription([
         DeclareLaunchArgument(
@@ -41,5 +52,6 @@ def generate_launch_description():
             default_value='true',
             description='Use ros2_control if true'),
 
-        node_robot_state_publisher
+        node_robot_state_publisher,
+        # rviz_node
     ])

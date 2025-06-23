@@ -2,7 +2,7 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
   <ros2_control name="IgnitionSystem" type="system">
     <hardware>
-      <plugin>gz_ros2_control/IgnitionSystem</plugin>
+      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
     </hardware>
 
     <joint name="Wheel_FL_joint">
@@ -33,7 +33,7 @@
   
    <gazebo>
       <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-        <parameters>$(find robotpadi)/config/diff_drive_controller.yaml</parameters>
+        <parameters>/home/arya/botpadi_ws/install/robotpadi/share/robotpadi/config/diff_drive_controller.yaml</parameters>
       </plugin>
   </gazebo>
 </robot>

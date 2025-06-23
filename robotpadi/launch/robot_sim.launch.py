@@ -68,9 +68,9 @@ def generate_launch_description():
         arguments=[
             '-topic', '/robot_description',
             '-name', 'my_robot',
-            '-x', '0.0',
-            '-y', '0.0',
-            '-z', '2'
+            '-x', '20.0',
+            '-y', '20.0',
+            '-z', '5.0'
         ],
         output='screen'
     )
@@ -115,7 +115,7 @@ def generate_launch_description():
         package='controller_manager',
         executable='spawner',
         arguments=[
-            'diff_drive_base_controller',
+            'diff_drive_controller',
             '--param-file',
             robot_controllers,
             ],
@@ -131,7 +131,7 @@ def generate_launch_description():
             package="twist_mux",
             executable="twist_mux",
             parameters=[twist_mux_params, {'use_sim_time': True}],
-            remappings=[('/cmd_vel_out','/diff_drive_base_controller/cmd_vel_unstamped')]
+            remappings=[('/cmd_vel_out','/diff_drive_controller/cmd_vel_unstamped')]
         )   
     return LaunchDescription([
         DeclareLaunchArgument(
