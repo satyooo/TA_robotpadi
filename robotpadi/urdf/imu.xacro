@@ -7,8 +7,8 @@
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
           <box size="0.1 0.1 0.1"/> </geometry>
-        <material name="blue">
-          <color rgba="0 0 1 1"/>
+        <material name="black">
+          <color rgba="0 0 0 1"/>
         </material>
       </visual>
       <collision>
@@ -36,10 +36,10 @@
         <update_rate>100</update_rate>
         <visualize>true</visualize>
         <topic>imu/data</topic>
-        <plugin filename="libgz_ros2_imu_bridge.so" name="imu_bridge_plugin">
+        <!-- <plugin filename="libgz_ros2_imu_bridge.so" name="imu_bridge_plugin">
           <ros_topic>imu/data</ros_topic>
           <frame_id>${imu_link_name}</frame_id>
-        </plugin>
+        </plugin> -->
       </sensor>
     </gazebo>
 

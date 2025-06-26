@@ -1,0 +1,9 @@
+# Ignore ROS 2 build artifacts
+build/
+install/
+log/
+
+# Ignore common files
+*.swp
+*~
+.vscode/
