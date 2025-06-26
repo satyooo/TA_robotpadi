@@ -1,0 +1,76 @@
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found ament_cmake: 1.3.11 (/opt/ros/humble/share/ament_cmake/cmake)
+-- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+-- Found ament_lint_auto: 0.12.12 (/opt/ros/humble/share/ament_lint_auto/cmake)
+-- Added test 'flake8' to check Python code syntax and style conventions
+-- Added test 'lint_cmake' to check CMake code style
+-- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+-- Added test 'xmllint' to check XML markup files
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/satyo03/TA/build/robotpadi
+-- Install configuration: ""
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//launch
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//launch/rsp.launch.py
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//launch/robot_sim.launch.py
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//launch/teleop_key.launch.py
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//config
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//config/diff_drive_controller.yaml
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//config/teleop_joystick.yaml
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//config/twist_mux.yaml
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//worlds
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//worlds/worlds.sdf
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//urdf
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//urdf/robot_padi.xacro
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//urdf/imu.xacro
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//urdf/ros2_control.xacro
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//urdf/main.xacro
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//urdf/gazebo_plugin.xacro
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//rviz
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//rviz/view.rviz
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//models
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//models/sand_heightmap
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//models/sand_heightmap/model.config
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//models/sand_heightmap/thumbnails
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//models/sand_heightmap/thumbnails/2.png
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//models/sand_heightmap/thumbnails/1.png
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//models/sand_heightmap/meshes
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//models/sand_heightmap/meshes/heightmap.dae
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//models/sand_heightmap/model.sdf
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//models/sand_heightmap/materials
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//models/sand_heightmap/materials/scripts
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//models/sand_heightmap/materials/scripts/sand.material
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//models/sand_heightmap/materials/textures
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//models/sand_heightmap/materials/textures/soil_sand_0045_01.jpg
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//meshes
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//meshes/base_link.STL
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//meshes/Wheel_RR_Link.STL
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//meshes/Wheel_FR_Link.STL
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//meshes/Wheel_FL_Link.STL
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi//meshes/Wheel_RL_Link.STL
+-- Installing: /home/satyo03/TA/install/robotpadi/share/ament_index/resource_index/package_run_dependencies/robotpadi
+-- Installing: /home/satyo03/TA/install/robotpadi/share/ament_index/resource_index/parent_prefix_path/robotpadi
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi/environment/ament_prefix_path.sh
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi/environment/ament_prefix_path.dsv
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi/environment/path.sh
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi/environment/path.dsv
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi/local_setup.bash
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi/local_setup.sh
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi/local_setup.zsh
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi/local_setup.dsv
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi/package.dsv
+-- Installing: /home/satyo03/TA/install/robotpadi/share/ament_index/resource_index/packages/robotpadi
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi/cmake/robotpadiConfig.cmake
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi/cmake/robotpadiConfig-version.cmake
+-- Installing: /home/satyo03/TA/install/robotpadi/share/robotpadi/package.xml

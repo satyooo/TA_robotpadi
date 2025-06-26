@@ -1,0 +1,8 @@
+source;share/robotpadi/hook/cmake_prefix_path.ps1
+source;share/robotpadi/hook/cmake_prefix_path.dsv
+source;share/robotpadi/hook/cmake_prefix_path.sh
+source;share/robotpadi/local_setup.bash
+source;share/robotpadi/local_setup.dsv
+source;share/robotpadi/local_setup.ps1
+source;share/robotpadi/local_setup.sh
+source;share/robotpadi/local_setup.zsh

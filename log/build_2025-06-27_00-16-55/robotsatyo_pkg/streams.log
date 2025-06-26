@@ -1,0 +1,20 @@
+[1.239s] Invoking command in '/home/satyo03/TA/robotsatyo_pkg': PYTHONPATH=/home/satyo03/TA/build/robotsatyo_pkg/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/satyo03/TA/install/robotsatyo_pkg/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/robotsatyo_pkg build --build-base /home/satyo03/TA/build/robotsatyo_pkg/build install --record /home/satyo03/TA/build/robotsatyo_pkg/install.log --single-version-externally-managed install_data
+[1.662s] running egg_info
+[1.664s] writing ../build/robotsatyo_pkg/robotsatyo_pkg.egg-info/PKG-INFO
+[1.664s] writing dependency_links to ../build/robotsatyo_pkg/robotsatyo_pkg.egg-info/dependency_links.txt
+[1.665s] writing entry points to ../build/robotsatyo_pkg/robotsatyo_pkg.egg-info/entry_points.txt
+[1.665s] writing requirements to ../build/robotsatyo_pkg/robotsatyo_pkg.egg-info/requires.txt
+[1.665s] writing top-level names to ../build/robotsatyo_pkg/robotsatyo_pkg.egg-info/top_level.txt
+[1.669s] reading manifest file '../build/robotsatyo_pkg/robotsatyo_pkg.egg-info/SOURCES.txt'
+[1.671s] writing manifest file '../build/robotsatyo_pkg/robotsatyo_pkg.egg-info/SOURCES.txt'
+[1.672s] running build
+[1.672s] running build_py
+[1.672s] running install
+[1.672s] running install_lib
+[1.675s] running install_data
+[1.675s] running install_egg_info
+[1.680s] removing '/home/satyo03/TA/install/robotsatyo_pkg/lib/python3.10/site-packages/robotsatyo_pkg-0.0.0-py3.10.egg-info' (and everything under it)
+[1.681s] Copying ../build/robotsatyo_pkg/robotsatyo_pkg.egg-info to /home/satyo03/TA/install/robotsatyo_pkg/lib/python3.10/site-packages/robotsatyo_pkg-0.0.0-py3.10.egg-info
+[1.683s] running install_scripts
+[1.721s] writing list of installed files to '/home/satyo03/TA/build/robotsatyo_pkg/install.log'
+[1.774s] Invoked command in '/home/satyo03/TA/robotsatyo_pkg' returned '0': PYTHONPATH=/home/satyo03/TA/build/robotsatyo_pkg/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/satyo03/TA/install/robotsatyo_pkg/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/robotsatyo_pkg build --build-base /home/satyo03/TA/build/robotsatyo_pkg/build install --record /home/satyo03/TA/build/robotsatyo_pkg/install.log --single-version-externally-managed install_data
