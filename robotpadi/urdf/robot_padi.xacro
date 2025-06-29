@@ -204,7 +204,7 @@
     <child
       link="Wheel_FR_Link" />
     <axis
-      xyz="0 -1 0" />
+      xyz="0 1 0" />
   </joint>
   <link
     name="Wheel_RR_Link">
@@ -255,7 +255,7 @@
     <child
       link="Wheel_RR_Link" />
     <axis
-      xyz="0 -1 0" />
+      xyz="0 1 0" />
   </joint>
 
   <gazebo reference="base_link">

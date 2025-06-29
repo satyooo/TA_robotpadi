@@ -41,7 +41,11 @@
         </link>
       </model>
 
-    
+    <!-- <scene>
+  <shadows>false</shadows>
+  <render_engine>ogre</render_engine> 
+   </scene>  
+     -->
     <scene>
       <shadows>false</shadows>
     </scene>
@@ -75,6 +79,7 @@
       </ode>
     </physics>
     <include>
+      <!-- <uri>model://sand_heightmap</uri> -->
       <uri>model://sand_heightmap</uri>
     </include>
 

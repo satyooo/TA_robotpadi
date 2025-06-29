@@ -7,8 +7,8 @@
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
           <box size="0.1 0.1 0.1"/> </geometry>
-        <material name="blue">
-          <color rgba="0 0 1 1"/>
+        <material name="black">
+          <color rgba="0 0 0 1"/>
         </material>
       </visual>
       <collision>
@@ -40,6 +40,51 @@
           <ros_topic>imu/data</ros_topic>
           <frame_id>${imu_link_name}</frame_id>
         </plugin> -->
+        <plugin filename="libignition-gazebo-imu-system.so"
+        name="ignition::gazebo::systems::Imu">
+        </plugin>
+      <!-- <imu>
+        <angular_velocity>
+          <x>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>2e-4</stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>2e-4</stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>2e-4</stddev>
+            </noise>
+          </z>
+        </angular_velocity>
+        <linear_acceleration>
+          <x>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>1.7e-2</stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>1.7e-2</stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>1.7e-2</stddev>
+            </noise>
+          </z>
+        </linear_acceleration>
+      </imu> -->
       </sensor>
     </gazebo>
 

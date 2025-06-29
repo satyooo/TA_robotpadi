@@ -1,6 +1,0 @@
-Invoking command in '/home/satyo03/TA/build/robotpadi': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/satyo03/TA/robotpadi -DCMAKE_INSTALL_PREFIX=/home/satyo03/TA/install/robotpadi
-Invoked command in '/home/satyo03/TA/build/robotpadi' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/satyo03/TA/robotpadi -DCMAKE_INSTALL_PREFIX=/home/satyo03/TA/install/robotpadi
-Invoking command in '/home/satyo03/TA/build/robotpadi': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/satyo03/TA/build/robotpadi -- -j4 -l4
-Invoked command in '/home/satyo03/TA/build/robotpadi' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/satyo03/TA/build/robotpadi -- -j4 -l4
-Invoking command in '/home/satyo03/TA/build/robotpadi': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/satyo03/TA/build/robotpadi
-Invoked command in '/home/satyo03/TA/build/robotpadi' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/satyo03/TA/build/robotpadi
