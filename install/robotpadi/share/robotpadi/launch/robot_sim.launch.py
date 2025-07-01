@@ -156,6 +156,13 @@ def generate_launch_description():
             parameters=[twist_mux_params, {'use_sim_time': True}],
             remappings=[('/cmd_vel_out','/diff_drive_controller/cmd_vel_unstamped')]
         )   
+    # --- Node untuk Sliding Mode Controller ---
+    # smc_controller_node = Node(
+    #         package='robotpadi',
+    #         executable='smc_controller',
+    #         name='smc_controller',
+    #         output='screen'
+    #     )
     return LaunchDescription([
         DeclareLaunchArgument(
             'use_sim_time',
@@ -183,4 +190,5 @@ def generate_launch_description():
         # rviz_node,
         joystick,
         twist_mux,  
+        # smc_controller_node
     ])

@@ -32,3 +32,49 @@ if(BUILD_TESTING)
 endif()
 
 ament_package()
+
+
+
+
+# cmake_minimum_required(VERSION 3.8)
+# project(robotpadi)
+
+# if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+#   add_compile_options(-Wall -Wextra -Wpedantic)
+# endif()
+
+# # find dependencies
+# find_package(ament_cmake REQUIRED)
+# find_package(python_cmake_module REQUIRED) # <-- Tambahkan ini jika belum ada
+
+# # --- Install direktori yang berisi resource (launch, urdf, dll) ---
+# install(DIRECTORY
+#   launch
+#   config
+#   worlds
+#   urdf
+#   rviz
+#   models
+#   meshes
+#   DESTINATION share/${PROJECT_NAME}/
+# )
+
+# # --- Install Node Python sebagai Executable ---
+# # Perintah ini akan membuat ROS 2 mengenali skrip python Anda
+# # sebagai node yang bisa dijalankan (via ros2 run atau launch)
+# install(PROGRAMS
+#   "robotpadi/imu_covariance_fixer.py"
+#   "robotpadi/smc_controller.py"
+#   DESTINATION lib/${PROJECT_NAME}
+# )
+
+# if(BUILD_TESTING)
+#   find_package(ament_lint_auto REQUIRED)
+#   set(ament_cmake_copyright_FOUND TRUE)
+#   set(ament_cmake_cpplint_FOUND TRUE)
+#   ament_lint_auto_find_test_dependencies()
+# endif()
+
+# ament_package()
+
+
