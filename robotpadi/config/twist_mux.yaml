@@ -14,6 +14,6 @@ twist_mux:
         timeout: 0.5
         priority: 30
       smc:
-        topic: /cmd_vel_smc
+        topic: /cmd_vel
         timeout: 0.5
-        priority: 100 # Beri prioritas tinggi
+        priority: 40 # Beri prioritas tinggi

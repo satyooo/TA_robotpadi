@@ -19,7 +19,7 @@ diff_drive_controller:
     right_wheel_names: ["Wheel_FR_joint", "Wheel_RR_joint"]
 
     wheel_separation: 0.88  # Sesuaikan: Jarak antar roda kiri dan kanan
-    wheel_radius: 0.15     # Sesuaikan: Radius roda Anda
+    wheel_radius: 0.35     # Sesuaikan: Radius roda Anda
     
     # Opsi lain (biasanya default sudah cukup baik)
     frame_id: odom

@@ -92,28 +92,7 @@ def generate_launch_description():
         output='screen',
         parameters=[{'use_sim_time': use_sim_time}]
     )
-    #    # --- 6. Launch Gazebo-ROS Bridge ---
-    # # Menggunakan IncludeLaunchDescription untuk meluncurkan bridge dari ros_gz_sim
-    # gz_ros_bridge = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource(
-    #         os.path.join(pkg_ros_gz_sim, 'launch', 'gz_bridge.launch.py') # File launch bridge
-    #     ),
-    #     launch_arguments=[
-    #         # Daftar remapping topik yang diperlukan oleh gz_bridge.launch.py
-    #         # Format umumnya adalah 'topik_ros@tipe_ros[tipe_gazebo' atau
-    #         # 'topik_ros@tipe_ros@topik_gazebo[tipe_gazebo'
-    #         ('gz_args', '-r /clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock ' +
-    #                      '/cmd_vel@geometry_msgs/msg/Twist[gz.msgs.Twist ' +
-    #                      '/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry ' +
-    #                      '/camera/image_raw@sensor_msgs/msg/Image[gz.msgs.Image ' +
-    #                      '/camera/camera_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo ' +
-    #                      '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan ' +
-    #                      '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model ' +
-    #                      f'/imu/data@sensor_msgs/msg/Imu@/model/my_robot/imu_link/imu/data[gz.msgs.IMU'
-    #         ),
-    #         ('use_sim_time', use_sim_time) # Meneruskan argumen use_sim_time
-    #     ]
-    # )
+
     # --- 7. Launch RViz2 ---
     rviz_node = Node(
         package='rviz2',
@@ -133,6 +112,7 @@ def generate_launch_description():
         executable='spawner',
         arguments=['joint_state_broadcaster'],
     )
+    
     # Spawn diff drive controller
     diff_drive_base_controller_spawner = Node(
         package='controller_manager',
@@ -154,22 +134,35 @@ def generate_launch_description():
             package="twist_mux",
             executable="twist_mux",
             parameters=[twist_mux_params, {'use_sim_time': True}],
-            remappings=[('/cmd_vel_out','/diff_drive_controller/cmd_vel_unstamped')]
+            remappings=[('/cmd_vel_out','/diff_drive_controller/cmd_vel_unstamped')],
         )   
-    # --- Node untuk Sliding Mode Controller ---
+
+    # Node untuk Sliding Mode Controller
     # smc_controller_node = Node(
-    #         package='robotpadi',
+    #         package='smc_controller',
     #         executable='smc_controller',
-    #         name='smc_controller',
-    #         output='screen'
+    #         name='smc_controller_node',
+    #         output='screen',
+    #         remappings=[
+    #             ('/cmd_vel_smc', '/diff_drive_controller/cmd_vel_unstamped')
+    #         ],
+    #         emulate_tty=True,
     #     )
-    return LaunchDescription([
+    # Node untuk Sliding Mode Controller
+    smc_controller_node = Node(
+            package='smc_controller',
+            executable='smc_controller',
+            name='smc_controller_node',
+            output='screen',
+            emulate_tty=True,
+        )
+
+    return LaunchDescription([  
         DeclareLaunchArgument(
             'use_sim_time',
             default_value='true',
             description='Use simulation (Gazebo) clock if true'
         ),
-        
         set_env_vars,
         gz_sim,
         spawn_robot,
@@ -190,5 +183,5 @@ def generate_launch_description():
         # rviz_node,
         joystick,
         twist_mux,  
-        # smc_controller_node
+        smc_controller_node
     ])
