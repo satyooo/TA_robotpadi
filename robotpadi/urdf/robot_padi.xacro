@@ -4,6 +4,7 @@
      For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
   <xacro:property name="mesh_path" value="$(find robotpadi)/meshes"/>
+  <xacro:include filename="$(find robotpadi)/urdf/imu.xacro" />
   <link name="base_footprint"/>
 
   <joint name="base_footprint_to_base_link_joint" type="fixed">
@@ -18,14 +19,21 @@
         xyz="0.0840921680050198 -0.00163983249679742 0.134879064410453"
         rpy="0 0 0" />
       <mass
-        value="49.9119470217901" />
-      <inertia
+        value="180" />
+      <!-- <inertia
         ixx="2.32881913674761"
         ixy="3.13125017353562E-06"
         ixz="0.605279043325787"
         iyy="1.87881391838459"
         iyz="-1.67327823321756E-07"
-        izz="2.97314088623897" />
+        izz="2.97314088623897" /> -->
+      <inertia
+        ixx="25.4"
+        ixy="0"
+        ixz="0"
+        iyy="35.1"
+        iyz="0"
+        izz="38.2" />
     </inertial>
     <visual>
       <origin
@@ -37,7 +45,7 @@
       <material
         name="">
         <color
-          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+          rgba="0 0 1 1" />
       </material>
     </visual>
     <collision>
@@ -50,6 +58,8 @@
     </collision>
   </link>
   
+   <xacro:imu_sensor parent_link="base_link" imu_link_name="imu_link" origin_xyz="0 0 0.05" origin_rpy="0 0 0"/>
+
   <link
     name="Wheel_FL_Link">
     <inertial>
@@ -57,7 +67,7 @@
         xyz="-1.11022302462516E-16 0.0271089810837371 0"
         rpy="0 0 0" />
       <mass
-        value="0.378233531013503" />
+        value="5" />
       <inertia
         ixx="0.00350719044409918"
         ixy="-9.92501913416296E-14"
@@ -76,7 +86,7 @@
       <material
         name="">
         <color
-          rgba="0.109803921568627 0.109803921568627 0.109803921568627 1" />
+          rgba="0 0 0 1" />
       </material>
     </visual>
     <collision>
@@ -108,7 +118,7 @@
         xyz="7.7715611723761E-16 0.0241089810837369 6.66133814775094E-16"
         rpy="0 0 0" />
       <mass
-        value="0.378233531013499" />
+        value="5" />
       <inertia
         ixx="0.00350719044409904"
         ixy="9.92519864792002E-14"
@@ -127,7 +137,7 @@
       <material
         name="">
         <color
-          rgba="0.109803921568627 0.109803921568627 0.109803921568627 1" />
+          rgba="0 0 0 1" />
       </material>
     </visual>
     <collision>
@@ -159,7 +169,7 @@
         xyz="-2.77555756156289E-16 -0.0241089810837368 7.7715611723761E-16"
         rpy="0 0 0" />
       <mass
-        value="0.378233531013493" />
+        value="5" />
       <inertia
         ixx="0.00350719044409909"
         ixy="-4.35263549557573E-14"
@@ -178,7 +188,7 @@
       <material
         name="">
         <color
-          rgba="0.109803921568627 0.109803921568627 0.109803921568627 1" />
+          rgba="0 0 0 1" />
       </material>
     </visual>
     <collision>
@@ -201,7 +211,7 @@
     <child
       link="Wheel_FR_Link" />
     <axis
-      xyz="0 -1 0" />
+      xyz="0 1 0" />
   </joint>
   <link
     name="Wheel_RR_Link">
@@ -210,7 +220,7 @@
         xyz="-1.22124532708767E-15 -0.0241089810837372 0"
         rpy="0 0 0" />
       <mass
-        value="0.37823353101351" />
+        value="5" />
       <inertia
         ixx="0.00350719044409917"
         ixy="9.9248445809483E-14"
@@ -229,7 +239,7 @@
       <material
         name="">
         <color
-          rgba="0.109803921568627 0.109803921568627 0.109803921568627 1" />
+          rgba="0 0 0 1" />
       </material>
     </visual>
     <collision>
@@ -252,6 +262,26 @@
     <child
       link="Wheel_RR_Link" />
     <axis
-      xyz="0 -1 0" />
+      xyz="0 1 0" />
   </joint>
+
+  <gazebo reference="base_link">
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1</mu>
+                        <mu2>1</mu2>
+                        <slip1>0.1</slip1>
+                        <slip2>0</slip2>
+                        <fdir1>0 1 0</fdir1>
+                    </ode>
+                    <bullet>
+                        <friction>1</friction>
+                        <friction2>1</friction2>
+                        <rolling_friction>0.1</rolling_friction>
+                        <spinning_friction>0.1</spinning_friction>
+                    </bullet>
+                </friction>
+            </surface>
+        </gazebo>
 </robot>

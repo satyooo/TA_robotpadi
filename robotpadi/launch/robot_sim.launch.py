@@ -132,7 +132,15 @@ def generate_launch_description():
             executable="twist_mux",
             parameters=[twist_mux_params, {'use_sim_time': True}],
             remappings=[('/cmd_vel_out','/diff_drive_controller/cmd_vel_unstamped')]
-        )   
+        )
+    smc_controllers_node= Node(
+        package='smc_controllers',
+        executable='smc_controllers',
+        name='smc_controllers',
+        parameters=[{'use_sim_time': use_sim_time}],
+        output='screen'
+    )
+
     return LaunchDescription([
         DeclareLaunchArgument(
             'use_sim_time',
@@ -160,4 +168,5 @@ def generate_launch_description():
         # rviz_node,
         joystick,
         twist_mux,  
+        smc_controllers_node
     ])
