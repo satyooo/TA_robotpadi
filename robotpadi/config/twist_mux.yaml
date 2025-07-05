@@ -9,11 +9,11 @@ twist_mux:
         topic: /nav/cmd_vel
         timeout: 0.5
         priority: 10
-      teleop:
-        topic: /cmd_vel
-        timeout: 0.5
-        priority: 30
+      # teleop:
+      #   topic: /cmd_vel_joy
+      #   timeout: 0.5
+      #   priority: 30
       smc:
-        topic: /cmd_vel
+        topic: /cmd_vel_unstamped
         timeout: 0.5
         priority: 40 # Beri prioritas tinggi

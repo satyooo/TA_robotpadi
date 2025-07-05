@@ -111,6 +111,18 @@
     <axis
       xyz="0 1 0" />
   </joint>
+  <!-- transmission -->
+  <transmission name="Wheel_FL_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="Wheel_FL_joint">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="Wheel_FL_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+<!-- transmission -->
   <link
     name="Wheel_RL_Link">
     <inertial>
@@ -162,6 +174,18 @@
     <axis
       xyz="0 1 0" />
   </joint>
+  <!-- transmission -->
+  <transmission name="Wheel_RL_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="Wheel_RL_joint">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="Wheel_RL_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <!-- transmission -->
   <link
     name="Wheel_FR_Link">
     <inertial>
@@ -213,6 +237,18 @@
     <axis
       xyz="0 1 0" />
   </joint>
+  <!-- transmission -->
+  <transmission name="Wheel_FR_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="Wheel_FR_joint">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="Wheel_FR_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <!-- transmission -->
   <link
     name="Wheel_RR_Link">
     <inertial>
@@ -264,6 +300,18 @@
     <axis
       xyz="0 1 0" />
   </joint>
+  <!-- transmission -->
+  <transmission name="Wheel_RR_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="Wheel_RR_joint">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="Wheel_RR_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <!-- transmission -->
 
   <gazebo reference="base_link">
             <surface>

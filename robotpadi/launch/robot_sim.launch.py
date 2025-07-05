@@ -154,6 +154,9 @@ def generate_launch_description():
             executable='smc_controller',
             name='smc_controller_node',
             output='screen',
+            remappings=[
+            ('/cmd_vel', '/cmd_vel_unstamped')
+            ],
             emulate_tty=True,
         )
 
