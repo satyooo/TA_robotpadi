@@ -1,1 +1,2 @@
-/home/satyo03/TA_robotpadi/build/robotpadi/ament_cmake_environment_hooks/local_setup.dsv
+source;share/robotpadi/environment/ament_prefix_path.sh
+source;share/robotpadi/environment/path.sh

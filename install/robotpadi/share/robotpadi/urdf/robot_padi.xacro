@@ -1,1 +1,335 @@
-/home/satyo03/TA_robotpadi/robotpadi/urdf/robot_padi.xacro
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:property name="mesh_path" value="$(find robotpadi)/meshes"/>
+  <xacro:include filename="$(find robotpadi)/urdf/imu.xacro" />
+  <link name="base_footprint"/>
+
+  <joint name="base_footprint_to_base_link_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+  </joint>
+
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="0.0840921680050198 -0.00163983249679742 0.134879064410453"
+        rpy="0 0 0" />
+      <mass
+        value="180" />
+      <!-- <inertia
+        ixx="2.32881913674761"
+        ixy="3.13125017353562E-06"
+        ixz="0.605279043325787"
+        iyy="1.87881391838459"
+        iyz="-1.67327823321756E-07"
+        izz="2.97314088623897" /> -->
+      <inertia
+        ixx="25.4"
+        ixy="0"
+        ixz="0"
+        iyy="35.1"
+        iyz="0"
+        izz="38.2" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://${mesh_path}/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://${mesh_path}/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  
+   <xacro:imu_sensor parent_link="base_link" imu_link_name="imu_link" origin_xyz="0 0 0.05" origin_rpy="0 0 0"/>
+
+  <link
+    name="Wheel_FL_Link">
+    <inertial>
+      <origin
+        xyz="-1.11022302462516E-16 0.0271089810837371 0"
+        rpy="0 0 0" />
+      <mass
+        value="5" />
+      <inertia
+        ixx="0.00350719044409918"
+        ixy="-9.92501913416296E-14"
+        ixz="4.93198168428617E-17"
+        iyy="0.00624534196811695"
+        iyz="-4.35310172123345E-14"
+        izz="0.00350719044409912" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://${mesh_path}/Wheel_FL_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://${mesh_path}/Wheel_FL_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Wheel_FL_joint"
+    type="continuous">
+    <origin
+      xyz="0.545 0.437 -0.747"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="Wheel_FL_Link" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <!-- transmission -->
+  <transmission name="Wheel_FL_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="Wheel_FL_joint">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="Wheel_FL_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+<!-- transmission -->
+  <link
+    name="Wheel_RL_Link">
+    <inertial>
+      <origin
+        xyz="7.7715611723761E-16 0.0241089810837369 6.66133814775094E-16"
+        rpy="0 0 0" />
+      <mass
+        value="5" />
+      <inertia
+        ixx="0.00350719044409904"
+        ixy="9.92519864792002E-14"
+        ixz="-7.45868758339047E-18"
+        iyy="0.0062453419681168"
+        iyz="4.35243565314327E-14"
+        izz="0.00350719044409911" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://${mesh_path}/Wheel_RL_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://${mesh_path}/Wheel_RL_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Wheel_RL_joint"
+    type="continuous">
+    <origin
+      xyz="-0.545 0.44 -0.747"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="Wheel_RL_Link" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <!-- transmission -->
+  <transmission name="Wheel_RL_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="Wheel_RL_joint">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="Wheel_RL_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <!-- transmission -->
+  <link
+    name="Wheel_FR_Link">
+    <inertial>
+      <origin
+        xyz="-2.77555756156289E-16 -0.0241089810837368 7.7715611723761E-16"
+        rpy="0 0 0" />
+      <mass
+        value="5" />
+      <inertia
+        ixx="0.00350719044409909"
+        ixy="-4.35263549557573E-14"
+        ixz="7.08281671304654E-17"
+        iyy="0.00624534196811683"
+        iyz="-9.92550045529303E-14"
+        izz="0.00350719044409908" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://${mesh_path}/Wheel_FR_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://${mesh_path}/Wheel_FR_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Wheel_FR_joint"
+    type="continuous">
+    <origin
+      xyz="0.545 -0.44 -0.747"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="Wheel_FR_Link" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <!-- transmission -->
+  <transmission name="Wheel_FR_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="Wheel_FR_joint">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="Wheel_FR_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <!-- transmission -->
+  <link
+    name="Wheel_RR_Link">
+    <inertial>
+      <origin
+        xyz="-1.22124532708767E-15 -0.0241089810837372 0"
+        rpy="0 0 0" />
+      <mass
+        value="5" />
+      <inertia
+        ixx="0.00350719044409917"
+        ixy="9.9248445809483E-14"
+        ixz="-6.92408075349762E-17"
+        iyy="0.00624534196811691"
+        iyz="-4.35245365048595E-14"
+        izz="0.00350719044409912" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://${mesh_path}/Wheel_RR_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://${mesh_path}/Wheel_RR_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Wheel_RR_joint"
+    type="continuous">
+    <origin
+      xyz="-0.545 -0.44 -0.747"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="Wheel_RR_Link" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <!-- transmission -->
+  <transmission name="Wheel_RR_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="Wheel_RR_joint">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="Wheel_RR_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <!-- transmission -->
+
+  <gazebo reference="base_link">
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1</mu>
+                        <mu2>1</mu2>
+                        <slip1>0.1</slip1>
+                        <slip2>0</slip2>
+                        <fdir1>0 1 0</fdir1>
+                    </ode>
+                    <bullet>
+                        <friction>1</friction>
+                        <friction2>1</friction2>
+                        <rolling_friction>0.1</rolling_friction>
+                        <spinning_friction>0.1</spinning_friction>
+                    </bullet>
+                </friction>
+            </surface>
+        </gazebo>
+</robot>

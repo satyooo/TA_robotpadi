@@ -1,0 +1,33 @@
+# Konfigurasi Controller untuk Robot Padi
+controller_manager:
+  ros__parameters:
+    update_rate: 100  # Frekuensi update controller dalam Hz
+
+    # --- Controller untuk menggerakkan robot ---
+    diff_drive_controller:
+      type: diff_drive_controller/DiffDriveController
+
+    # --- Controller untuk mempublikasikan state semua joint ---
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+# --- Parameter untuk setiap controller ---
+diff_drive_controller:
+  ros__parameters:
+    # Untuk 4WD, kelompokkan joint kiri dan kanan
+    left_wheel_names: ["Wheel_FL_joint", "Wheel_RL_joint"]
+    right_wheel_names: ["Wheel_FR_joint", "Wheel_RR_joint"]
+
+    wheel_separation: 0.88  # Sesuaikan: Jarak antar roda kiri dan kanan
+    wheel_radius: 0.35     # Sesuaikan: Radius roda Anda
+    
+    # Opsi lain (biasanya default sudah cukup baik)
+    frame_id: odom
+    odom_frame_id: odom
+    base_frame_id: base_footprint
+    use_stamped_vel: false # Set true jika topic cmd_vel Anda bertipe TwistStamped
+
+joint_state_broadcaster:
+  ros__parameters:
+    {} # Tidak perlu parameter tambahan
+    

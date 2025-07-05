@@ -53,7 +53,7 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/satyo03/TA_robotpadi/robotpadi
+CMAKE_SOURCE_DIR = /home/satyo03/TA_robotpadi/src/robotpadi
 
 # The top-level build directory on which CMake was run.
 CMAKE_BINARY_DIR = /home/satyo03/TA_robotpadi/build/robotpadi
@@ -82,6 +82,6 @@ CMakeFiles/robotpadi_uninstall.dir/clean:
 .PHONY : CMakeFiles/robotpadi_uninstall.dir/clean
 
 CMakeFiles/robotpadi_uninstall.dir/depend:
-	cd /home/satyo03/TA_robotpadi/build/robotpadi && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/satyo03/TA_robotpadi/robotpadi /home/satyo03/TA_robotpadi/robotpadi /home/satyo03/TA_robotpadi/build/robotpadi /home/satyo03/TA_robotpadi/build/robotpadi /home/satyo03/TA_robotpadi/build/robotpadi/CMakeFiles/robotpadi_uninstall.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/satyo03/TA_robotpadi/build/robotpadi && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/satyo03/TA_robotpadi/src/robotpadi /home/satyo03/TA_robotpadi/src/robotpadi /home/satyo03/TA_robotpadi/build/robotpadi /home/satyo03/TA_robotpadi/build/robotpadi /home/satyo03/TA_robotpadi/build/robotpadi/CMakeFiles/robotpadi_uninstall.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/robotpadi_uninstall.dir/depend
 
