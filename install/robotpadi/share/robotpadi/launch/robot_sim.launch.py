@@ -71,7 +71,7 @@ def generate_launch_description():
             '-name', 'my_robot',
             '-x', '20.0',
             '-y', '0.0',
-            '-z', '5.0'
+            '-z', '2.0'
         ],
         output='screen'
     )
@@ -81,14 +81,16 @@ def generate_launch_description():
     gz_ros_bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
-        arguments=[ '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
-                    '/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist',
-		            '/odom@nav_msgs/msg/Odometry@gz.msgs.Odometry',
+        arguments=[ 
+                    '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
+                    '/cmd_vel@geometry_msgs/msg/Twist[gz.msgs.Twist]',
+                    '/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry]',
 		            '/camera/image_raw@sensor_msgs/msg/Image@gz.msgs.Image',
 	                '/camera/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo',
 	                '/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan',
 	                '/joint_states@sensor_msgs/msg/JointState@gz.msgs.Model',
-                    '/imu/data@sensor_msgs/msg/Imu[gz.msgs.IMU'],
+                    '/imu/data@sensor_msgs/msg/Imu[gz.msgs.IMU]'
+                    ],
         output='screen',
         parameters=[{'use_sim_time': use_sim_time}]
     )
@@ -138,54 +140,76 @@ def generate_launch_description():
         )   
 
     # Node untuk Sliding Mode Controller
+    smc_controller_node = Node(
+            package='smc_controller',
+            executable='smc_controller',  # Name of the Python file or executable
+            name='smc_controller_node',
+            output='screen',
+            remappings=[('/cmd_vel', '/cmd_vel_unstamped')],
+            parameters=[{'use_sim_time': use_sim_time}],
+    )
+
+    # Node untuk Sliding Mode Controller
+
     # smc_controller_node = Node(
     #         package='smc_controller',
     #         executable='smc_controller',
     #         name='smc_controller_node',
     #         output='screen',
     #         remappings=[
-    #             ('/cmd_vel_smc', '/diff_drive_controller/cmd_vel_unstamped')
+    #         ('/cmd_vel', '/cmd_vel_unstamped')
     #         ],
     #         emulate_tty=True,
     #     )
-    # Node untuk Sliding Mode Controller
-
-    smc_controller_node = Node(
-            package='smc_controller',
-            executable='smc_controller',
-            name='smc_controller_node',
-            output='screen',
-            remappings=[
-            ('/cmd_vel', '/cmd_vel_unstamped')
-            ],
-            emulate_tty=True,
-        )
 
     return LaunchDescription([  
-        DeclareLaunchArgument(
-            'use_sim_time',
-            default_value='true',
-            description='Use simulation (Gazebo) clock if true'
-        ),
+        # Argumen dan environment variable
+        DeclareLaunchArgument('use_sim_time', default_value='true', description='Use simulation clock if true'),
         set_env_vars,
+        
+        # Jalankan Gazebo dan node-node utama
         gz_sim,
-        spawn_robot,
-        RegisterEventHandler(
-            event_handler=OnProcessExit(
-                target_action=spawn_robot,
-                on_exit=[joint_state_broadcaster_spawner],
-            )
-        ),
-        RegisterEventHandler(
-            event_handler=OnProcessExit(
-                target_action=joint_state_broadcaster_spawner,
-                on_exit=[diff_drive_base_controller_spawner],
-            )
-        ),
         robot_state_publisher,
         gz_ros_bridge,
-        # rviz_node,
+        
+        # Spawn robot ke dalam Gazebo
+        spawn_robot,
+        
+        # Jalankan node-node lain
         joystick,
         twist_mux,  
-        smc_controller_node
+        smc_controller_node,
+
+        # --- JALANKAN SPAWNER SECARA LANGSUNG ---
+        # Spawner ini akan otomatis menunggu Controller Manager siap
+        joint_state_broadcaster_spawner,
+        diff_drive_base_controller_spawner,
     ])
+    # return LaunchDescription([  
+    #     DeclareLaunchArgument(
+    #         'use_sim_time',
+    #         default_value='true',
+    #         description='Use simulation (Gazebo) clock if true'
+    #     ),
+    #     set_env_vars,
+    #     gz_sim,
+    #     spawn_robot,
+    #     RegisterEventHandler(
+    #         event_handler=OnProcessExit(
+    #             target_action=spawn_robot,
+    #             on_exit=[joint_state_broadcaster_spawner],
+    #         )
+    #     ),
+    #     RegisterEventHandler(
+    #         event_handler=OnProcessExit(
+    #             target_action=joint_state_broadcaster_spawner,
+    #             on_exit=[diff_drive_base_controller_spawner],
+    #         )
+    #     ),
+    #     robot_state_publisher,
+    #     gz_ros_bridge,
+    #     # rviz_node,
+    #     joystick,
+    #     twist_mux,  
+    #     smc_controller_node
+    # ])

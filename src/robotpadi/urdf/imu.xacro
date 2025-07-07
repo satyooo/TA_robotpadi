@@ -40,13 +40,26 @@
           <ros_topic>imu/data</ros_topic>
           <frame_id>${imu_link_name}</frame_id>
         </plugin> -->
-        <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+        <sensor name="imu_sensor" type="imu">
+          <always_on>1</always_on>
+          <update_rate>100</update_rate>
+          <visualize>true</visualize>
+          <plugin name="gazebo_ros_imu_sensor" filename="libgazebo_ros_imu_sensor.so">
+            <ros>
+              <namespace>/</namespace>
+              <topic>/imu/data</topic>
+              <frame_id>base_link</frame_id>
+            </ros>
+            <initial_orientation_as_reference>false</initial_orientation_as_reference>
+          </plugin>
+        </sensor>
+        <!-- <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
           <ros>
             <namespace>/</namespace>
             <topic>/imu/data</topic>
           </ros>
           <initial_orientation_as_reference>false</initial_orientation_as_reference>
-        </plugin>
+        </plugin> -->
       <!-- <imu>
         <angular_velocity>
           <x>

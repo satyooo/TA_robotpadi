@@ -111,6 +111,18 @@
     <axis
       xyz="0 1 0" />
   </joint>
+  <!-- blok biar berat -->
+  <gazebo reference="Wheel_FL_Link">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.1</maxVel>
+    <fdir1>0 1 0</fdir1>
+    <material>Gazebo/Black</material>
+  </gazebo>
+<!-- blok biar berat -->
   <!-- transmission -->
   <transmission name="Wheel_FL_trans">
     <type>transmission_interface/SimpleTransmission</type>
@@ -174,6 +186,18 @@
     <axis
       xyz="0 1 0" />
   </joint>
+  <!-- blok biar berat -->
+  <gazebo reference="Wheel_RL_Link">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.1</maxVel>
+    <fdir1>0 1 0</fdir1>
+    <material>Gazebo/Black</material>
+  </gazebo>
+<!-- blok biar berat -->
   <!-- transmission -->
   <transmission name="Wheel_RL_trans">
     <type>transmission_interface/SimpleTransmission</type>
@@ -237,6 +261,18 @@
     <axis
       xyz="0 1 0" />
   </joint>
+  <!-- blok biar berat -->
+  <gazebo reference="Wheel_FR_Link">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.1</maxVel>
+    <fdir1>0 1 0</fdir1>
+    <material>Gazebo/Black</material>
+  </gazebo>
+<!-- blok biar berat -->
   <!-- transmission -->
   <transmission name="Wheel_FR_trans">
     <type>transmission_interface/SimpleTransmission</type>
@@ -300,6 +336,18 @@
     <axis
       xyz="0 1 0" />
   </joint>
+  <!-- blok biar berat -->
+  <gazebo reference="Wheel_RR_Link">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.1</maxVel>
+    <fdir1>0 1 0</fdir1>
+    <material>Gazebo/Black</material>
+  </gazebo>
+<!-- blok biar berat -->
   <!-- transmission -->
   <transmission name="Wheel_RR_trans">
     <type>transmission_interface/SimpleTransmission</type>
@@ -312,6 +360,15 @@
     </actuator>
   </transmission>
   <!-- transmission -->
+  <plugin name="gazebo_ros_odometry" filename="libgazebo_ros_odometry.so">
+    <ros>
+      <robotNamespace>/robotpadi</robotNamespace>
+      <topicName>/odom</topicName>
+    </ros>
+    <publish_odom>true</publish_odom>
+    <publish_tf>true</publish_tf>
+    ...
+  </plugin>
 
   <gazebo reference="base_link">
             <surface>
@@ -331,5 +388,5 @@
                     </bullet>
                 </friction>
             </surface>
-        </gazebo>
+  </gazebo>
 </robot>
