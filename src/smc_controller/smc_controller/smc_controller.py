@@ -28,15 +28,21 @@ class SmcControllerNode(Node):
         self.PHI = 0.5         # Boundary layer untuk fungsi sat()
 
         # --- State & Target ---
-        self.current_x, self.current_y, self.current_theta = 20.0, 0.0, 2.0
-        self.target_x, self.target_y = None, None  # Inisialisasi target path sebagai None
+        self.initial_x = 20.0
+        self.initial_y = 0.0
 
-        # Di masa depan, Anda bisa subscribe ke /desired_trajectory jika perlu
-        
+        # Inisialisasi posisi saat ini dengan posisi awal
+        self.current_x = self.initial_x
+        self.current_y = self.initial_y
+        self.current_theta = 2.0
+
+        self.trajectory_received = False
+        self.final_target_x = None
+
         # --- Subscribers & Publisher ---
         self.odom_sub = self.create_subscription(Odometry, '/diff_drive_controller/odom', self.odom_callback, 10)
         self.imu_sub = self.create_subscription(Imu, '/imu/data', self.imu_callback, 10)
-        self.path_sub = self.create_subscription(Path, '/trajectory', self.path_callback, 10)  # Path subscriber
+        self.path_sub = self.create_subscription(Path, '/line_trajectory', self.path_callback, 10)  # Path subscriber
         self.cmd_pub = self.create_publisher(Twist, '/cmd_vel', 10)
 
         # --- Loop Kontrol ---
@@ -44,18 +50,28 @@ class SmcControllerNode(Node):
         self.get_logger().info('SMC Controller Node has been started.')
 
     def odom_callback(self, msg):
-        self.current_x = msg.pose.pose.position.x   
-        self.current_y = msg.pose.pose.position.y
+        odom_x = msg.pose.pose.position.x
+        odom_y = msg.pose.pose.position.y
+        self.current_x = self.initial_x + odom_x
+        self.current_y = self.initial_y + odom_y
 
     def imu_callback(self, msg):
         self.current_theta = euler_from_quaternion(msg.orientation)
 
     def path_callback(self, msg):
-        # Ambil titik pertama dari path
-        if msg.poses:
-            self.target_x = msg.poses[0].pose.position.x
-            self.target_y = msg.poses[0].pose.position.y
-            self.get_logger().info(f"Path received: Target x={self.target_x}, y={self.target_y}")
+        # <<< MODIFIKASI 2: Buka gerbang saat path diterima dan simpan titik akhir >>>
+        if msg.poses and not self.trajectory_received:
+            # Ambil koordinat x dari pose terakhir dalam path
+            self.final_target_x = msg.poses[-1].pose.position.x
+            self.trajectory_received = True # Buka gerbang!
+            self.get_logger().info(f"Trajectory received with {len(msg.poses)} points. Final target x: {self.final_target_x}. Starting control.")
+
+    # def path_callback(self, msg):
+    #     # Ambil titik pertama dari path
+    #     if msg.poses:
+    #         self.target_x = msg.poses[0].pose.position.x
+    #         self.target_y = msg.poses[0].pose.position.y
+    #         self.get_logger().info(f"Path received: Target x={self.target_x}, y={self.target_y}")
 
 
     def sat_function(self, s, phi):
@@ -64,8 +80,8 @@ class SmcControllerNode(Node):
         else: return s / phi
 
     def control_loop(self):
-        # if self.target_x is None or self.target_y is None:
-        #     return  # Jika path belum diterima, tidak lakukan apa-apa
+        if not self.trajectory_received:
+            return
     
         # Target untuk garis lurus y=0
         y_d = 0.0
@@ -94,13 +110,22 @@ class SmcControllerNode(Node):
             v = 0.0
             omega = 0.0
             
+        # Berhenti jika robot sudah mencapai atau sedikit melewati titik x terakhir
+        if self.current_x >= self.final_target_x - 0.2: # Beri buffer kecil 20 cm
+            v = 0.0
+            omega = 0.0
+
         # 6. Publikasikan perintah
         twist_msg = Twist()
         twist_msg.linear.x = v
         twist_msg.angular.z = omega
         self.cmd_pub.publish(twist_msg)
         
-        self.get_logger().info(f'y_err: {y_error:.2f}, s: {s:.2f}, ω: {omega:.2f}')
+        # Tambahkan self.current_x dan self.current_y ke dalam log
+        self.get_logger().info(
+            f'Pose: (x={self.current_x:.2f}, y={self.current_y:.2f}) | '
+            f'y_err: {y_error:.2f}, s: {s:.2f}, ω: {omega:.2f}, v: {v:.2f}'
+        )
 
     def stop_robot(self):
         self.get_logger().info('Sending stop command to robot.')

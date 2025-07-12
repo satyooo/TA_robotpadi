@@ -149,6 +149,22 @@ def generate_launch_description():
             parameters=[{'use_sim_time': use_sim_time}],
     )
 
+    coordinate_publisher_node = Node(
+        package='coordinate_publisher',
+        executable='coordinate_publisher',
+        name='coordinate_publisher_node',
+        output='screen',
+        parameters=[{'use_sim_time': use_sim_time}],
+    )
+
+    line_creator_node = Node(
+        package='line_creator',
+        executable='line_creator',
+        name='line_creator_node',
+        output='screen',
+        parameters=[{'use_sim_time': use_sim_time}],
+    )
+
     # Node untuk Sliding Mode Controller
 
     # smc_controller_node = Node(
@@ -179,6 +195,8 @@ def generate_launch_description():
         joystick,
         twist_mux,  
         smc_controller_node,
+        coordinate_publisher_node,
+        line_creator_node,
 
         # --- JALANKAN SPAWNER SECARA LANGSUNG ---
         # Spawner ini akan otomatis menunggu Controller Manager siap

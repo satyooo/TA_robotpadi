@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'trajectory_publisher'
+package_name = 'line_creator'
 
 setup(
     name=package_name,
@@ -16,11 +16,11 @@ setup(
     maintainer='satyo03',
     maintainer_email='satyosecond03@gmail.com',
     description='TODO: Package description',
-    license='Apache-2.0',
+    license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'trajectory_publisher = trajectory_publisher.trajectory_publisher:main'
+            'line_creator = line_creator.line_creator:main'
         ],
     },
 )
