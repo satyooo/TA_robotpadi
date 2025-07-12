@@ -83,13 +83,13 @@ def generate_launch_description():
         executable='parameter_bridge',
         arguments=[ 
                     '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
-                    '/cmd_vel@geometry_msgs/msg/Twist[gz.msgs.Twist]',
-                    '/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry]',
+                    '/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist',
+                    '/odom@nav_msgs/msg/Odometry@gz.msgs.Odometry',
 		            '/camera/image_raw@sensor_msgs/msg/Image@gz.msgs.Image',
 	                '/camera/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo',
 	                '/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan',
 	                '/joint_states@sensor_msgs/msg/JointState@gz.msgs.Model',
-                    '/imu/data@sensor_msgs/msg/Imu[gz.msgs.IMU]'
+                    '/imu/data@sensor_msgs/msg/Imu@gz.msgs.IMU'
                     ],
         output='screen',
         parameters=[{'use_sim_time': use_sim_time}]
@@ -149,6 +149,13 @@ def generate_launch_description():
             parameters=[{'use_sim_time': use_sim_time}],
     )
 
+    trajectory_publisher = Node(
+            package='trajectory_publisher',
+            executable='trajectory_publisher',  # Name of the Python file or executable
+            name='trajectory_publisher_node',
+            output='screen',
+            parameters=[{'use_sim_time': use_sim_time}],
+    )
     # Node untuk Sliding Mode Controller
 
     # smc_controller_node = Node(
@@ -179,6 +186,7 @@ def generate_launch_description():
         joystick,
         twist_mux,  
         smc_controller_node,
+        trajectory_publisher,
 
         # --- JALANKAN SPAWNER SECARA LANGSUNG ---
         # Spawner ini akan otomatis menunggu Controller Manager siap

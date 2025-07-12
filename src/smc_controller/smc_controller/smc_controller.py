@@ -2,230 +2,296 @@
 
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import Twist
+from nav_msgs.msg import Odometry, Path
 from sensor_msgs.msg import Imu
-from nav_msgs.msg import Odometry
+from geometry_msgs.msg import Twist
 import math
 import numpy as np
+from nav_msgs.msg import Path
 
-class SMCController(Node):
+
+def euler_from_quaternion(quaternion):
+    # ... (fungsi konversi dari respons sebelumnya) ...
+    x = quaternion.x; y = quaternion.y; z = quaternion.z; w = quaternion.w
+    t3 = +2.0 * (w * z + x * y); t4 = +1.0 - 2.0 * (y * y + z * z)
+    return math.atan2(t3, t4)
+
+class SmcControllerNode(Node):
     def __init__(self):
         super().__init__('smc_trajectory_tracker')
         
-        # If you are using this parameter later in the code:
         use_sim_time = self.get_parameter('use_sim_time').get_parameter_value().bool_value
+        # --- Parameter Kontrol (BISA ANDA TUNE) ---
+        self.V_CONSTANT = 1.0  # Kecepatan linear konstan (m/s)
+        self.Ky = 2.0          # Gain untuk error 'y'
+        self.K_omega = 0.5     # Gain switching untuk 'omega'
+        self.PHI = 0.5         # Boundary layer untuk fungsi sat()
 
-        # Parameters for the Sliding Mode Control
-        self.k1 = 1.0  # Control gain for position error (x)
-        self.k2 = 1.0  # Control gain for position error (y)
-        self.k3 = 1.0  # Control gain for orientation error (theta)
-        self.target_x = 15.0  # Target x position
-        self.target_y = 0.0  # Target y position
-        self.target_theta = 0.0  # Target orientation (heading)
+        # --- State & Target ---
+        self.current_x, self.current_y, self.current_theta = 20.0, 0.0, 2.0
+        self.target_x, self.target_y = None, None  # Inisialisasi target path sebagai None
 
-        # Robot's initial position and orientation
-        self.x = 0.0
-        self.y = 0.0
-        self.theta = 0.0
-
-        # Subscribe to Odometry to get the robot's position
+        # Di masa depan, Anda bisa subscribe ke /desired_trajectory jika perlu
+        
+        # --- Subscribers & Publisher ---
         self.odom_sub = self.create_subscription(Odometry, '/diff_drive_controller/odom', self.odom_callback, 10)
-
-        # Subscribe to IMU data to get robot's heading (yaw)
         self.imu_sub = self.create_subscription(Imu, '/imu/data', self.imu_callback, 10)
-
-        # Publisher for robot's control commands (linear velocity and angular velocity)
+        self.path_sub = self.create_subscription(Path, '/trajectory', self.path_callback, 10)  # Path subscriber
         self.cmd_pub = self.create_publisher(Twist, '/cmd_vel', 10)
 
-        # Timer to periodically compute control commands
-        self.timer = self.create_timer(0.1, self.control_loop)  # 10 Hz control loop
-   
-    def odom_callback(self, msg: Odometry):
-        """Callback function for Odometry data to get the robot's position."""
-        self.x = msg.pose.pose.position.x  # Update x position from Odometry
-        self.y = msg.pose.pose.position.y  # Update y position from Odometry
-        self.get_logger().info(f"Position (x, y): ({self.x}, {self.y})")
+        # --- Loop Kontrol ---
+        self.timer = self.create_timer(0.1, self.control_loop) # 10 Hz
+        self.get_logger().info('SMC Controller Node has been started.')
 
-    def imu_callback(self, msg: Imu):
-        q = msg.orientation
-        _, _, yaw = self.euler_from_quaternion(q)
-        self.theta = math.atan2(math.sin(yaw), math.cos(yaw))  # normalisasi
+    def odom_callback(self, msg):
+        self.current_x = msg.pose.pose.position.x   
+        self.current_y = msg.pose.pose.position.y
 
-    def euler_from_quaternion(self, q):
-        x, y, z, w = q.x, q.y, q.z, q.w
-        sinr_cosp = 2 * (w * x + y * z)
-        cosr_cosp = 1 - 2 * (x * x + y * y)
-        roll = np.arctan2(sinr_cosp, cosr_cosp)
+    def imu_callback(self, msg):
+        self.current_theta = euler_from_quaternion(msg.orientation)
 
-        sinp = 2 * (w * y - z * x)
-        pitch = np.arcsin(sinp)
+    def path_callback(self, msg):
+        # Ambil titik pertama dari path
+        if msg.poses:
+            self.target_x = msg.poses[0].pose.position.x
+            self.target_y = msg.poses[0].pose.position.y
+            self.get_logger().info(f"Path received: Target x={self.target_x}, y={self.target_y}")
 
-        siny_cosp = 2 * (w * z + x * y)
-        cosy_cosp = 1 - 2 * (y * y + z * z)
-        yaw = np.arctan2(siny_cosp, cosy_cosp)
 
-        return roll, pitch, yaw
-
-    # def euler_from_quaternion(self, quaternion):
-    #     """
-    #     Converts quaternion (w in last place) to euler roll, pitch, yaw
-    #     quaternion = [x, y, z, w]
-    #     """
-    #     x = quaternion.x
-    #     y = quaternion.y
-    #     z = quaternion.z
-    #     w = quaternion.w
-
-    #     # Roll (x-axis rotation)
-    #     sinr_cosp = 2 * (w * x + y * z)
-    #     cosr_cosp = 1 - 2 * (x * x + y * y)
-    #     roll = np.arctan2(sinr_cosp, cosr_cosp)
-
-    #     # Pitch (y-axis rotation)
-    #     sinp = 2 * (w * y - z * x)
-    #     pitch = np.arcsin(sinp)
-
-    #     # Yaw (z-axis rotation)
-    #     siny_cosp = 2 * (w * z + x * y)
-    #     cosy_cosp = 1 - 2 * (y * y + z * z)
-    #     yaw = np.arctan2(siny_cosp, cosy_cosp)
-
-    #     return roll, pitch, yaw
+    def sat_function(self, s, phi):
+        if s > phi: return 1.0
+        elif s < -phi: return -1.0
+        else: return s / phi
 
     def control_loop(self):
-        # Hitung error posisi dan orientasi
-        dx = self.target_x - self.x
-        dy = self.target_y - self.y
-        distance_to_target = math.hypot(dx, dy)
-        desired_theta = math.atan2(dy, dx)
-        e_theta = desired_theta - self.theta
-        e_theta = math.atan2(math.sin(e_theta), math.cos(e_theta))  # normalisasi
-        # # Perhitungan jarak ke target (pindah ke awal fungsi)
-        # distance_to_target = math.sqrt((self.target_x - self.x)**2 + (self.target_y - self.y)**2)
-
-        # Cek jika sudah dekat dengan target
-        if distance_to_target < 0.1:
-            control_input = Twist()
-            control_input.linear.x = 0.0
-            control_input.angular.z = 0.0
-            self.cmd_vel_pub.publish(control_input)
-            self.get_logger().info('Robot stopped.')
-            return  # Keluar dari fungsi agar tidak lanjut ke bawah
+        # if self.target_x is None or self.target_y is None:
+        #     return  # Jika path belum diterima, tidak lakukan apa-apa
+    
+        # Target untuk garis lurus y=0
+        y_d = 0.0
         
-        """Main control loop for the Sliding Mode Control."""
-        # Compute errors in position and orientation
-        e_x = self.target_x - self.x
-        e_y = self.target_y - self.y
-        e_theta = self.target_theta - self.theta
+        # 1. Hitung error y
+        y_error = self.current_y - y_d
+        
+        # 2. Hitung theta_d (orientasi target dinamis)
+        theta_d = -math.atan(self.Ky * y_error)
+        
+        # 3. Hitung sliding surface 's'
+        s = self.current_theta - theta_d
 
-        # Ensure the error is within a valid range (e.g., keep yaw errors within -pi to pi)
-        if e_theta > math.pi:
-            e_theta -= 2 * math.pi
-        elif e_theta < -math.pi:
-            e_theta += 2 * math.pi
-
-        # Compute the sliding mode control input (linear velocity and angular velocity)
-        s = self.k1 * e_x + self.k2 * e_y + self.k3 * e_theta
-
-        # Control law to suppress chattering using a saturation function
-        control_input = Twist()
-
-        # For straight-line movement, we primarily use the linear velocity
-        control_input.linear.x = 0.7  # Move forward at a constant speed (adjust as needed)
-        control_input.angular.z = self.k3 * e_theta  # Rotate to correct yaw error
-
-        # Apply the control input
-        self.cmd_pub.publish(control_input)
-        self.get_logger().info(f"Publishing to /cmd_vel: Linear Velocity: {control_input.linear.x}, Angular Velocity: {control_input.angular.z}")
-
-        # Calculate the distance to the target
-        distance_to_target = math.sqrt((self.target_x - self.x)**2 + (self.target_y - self.y)**2)
-
-        # Print position, errors, yaw (heading), and distance to target
-        # self.get_logger().info(f"Position (x, y): ({self.x}, {self.y})")
-        # self.get_logger().info(f"IMU Yaw (theta): {self.theta}")
-        # self.get_logger().info(f"Orientation error (theta): {e_theta}")
-        # self.get_logger().info(f"Distance to target: {distance_to_target}")
-        self.get_logger().info(f"Posisi       : ({self.x:.2f}, {self.y:.2f})")
-        self.get_logger().info(f"Yaw (rad)    : {self.theta:.2f} rad")
-        self.get_logger().info(f"Yaw (deg)    : {math.degrees(self.theta):.2f}°")
-        self.get_logger().info(f"Jarak ke goal: {distance_to_target:.2f} m")
-        self.get_logger().info(f"Error theta  : {e_theta:.2f} rad / {math.degrees(e_theta):.2f}°")
-        self.get_logger().info(f"Control Commands: Linear Velocity: {control_input.linear.x}, Angular Velocity: {control_input.angular.z}")
-
-        # Check if the robot is close enough to the target, and stop it
-        if distance_to_target < 0.1:  # If the robot is within 0.1 meters of the target
-            self.stop_robot()  # Stop the robot
-            self.get_logger().info("Robot has reached the target and is stopping.")
-
-
-# IMU DOANG
-
-    # def control_loop(self):
-    #     """Main control loop for the Sliding Mode Control."""
-    #     # Compute errors in position and orientation
-    #     e_x = self.target_x - self.x
-    #     e_y = self.target_y - self.y
-    #     e_theta = self.target_theta - self.theta
-
-    #     # Ensure the error is within a valid range (e.g., keep yaw errors within -pi to pi)
-    #     if e_theta > math.pi:
-    #         e_theta -= 2 * math.pi
-    #     elif e_theta < -math.pi:
-    #         e_theta += 2 * math.pi
-
-    #     # Compute the sliding mode control input (linear velocity and angular velocity)
-    #     s = self.k1 * e_x + self.k2 * e_y + self.k3 * e_theta
-
-    #     # Control law to suppress chattering using a saturation function
-    #     control_input = Twist()
-
-    #     # For straight-line movement, we primarily use the linear velocity
-    #     control_input.linear.x = 0.7  # Move forward at a constant speed (adjust as needed)
-    #     control_input.angular.z = self.k3 * e_theta  # Rotate to correct yaw error
-
-    #     # Apply the control input
-    #     self.cmd_pub.publish(control_input)
-
-    #     # Print the position, errors, yaw (heading), and distance to target
-    #     distance_to_target = math.sqrt((self.target_x - self.x)**2 + (self.target_y - self.y)**2)
-    #     self.get_logger().info(f"Position (x, y): ({self.x}, {self.y})")
-    #     self.get_logger().info(f"IMU Yaw (theta): {self.theta}")
-    #     self.get_logger().info(f"Orientation error (theta): {e_theta}")
-    #     self.get_logger().info(f"Distance to target: {distance_to_target}")
-    #     self.get_logger().info(f"Control Commands: Linear Velocity: {control_input.linear.x}, Angular Velocity: {control_input.angular.z}")
-    #     self.get_logger().info(f"Published Linear Velocity: {control_input.linear.x}, Angular Velocity: {control_input.angular.z}")
-
-    #     if distance_to_target < 0.1:  # Jika sudah cukup dekat dengan target
-    #         self.stop_robot()
+        # 4. Hitung omega (ω) menggunakan hukum kontrol SMC
+        # Komponen pertama (equivalent control)
+        u_eq = -(self.Ky * self.V_CONSTANT * math.sin(self.current_theta)) / (1 + (self.Ky * y_error)**2)
+        # Komponen kedua (switching control)
+        u_sw = -self.K_omega * self.sat_function(s, self.PHI)
+        
+        omega = u_eq + u_sw
+        
+        # 5. Atur kecepatan linear dan angular
+        v = self.V_CONSTANT
+        # Hentikan robot jika sudah mencapai ujung lintasan (misal x > 9.8)
+        if self.current_x > 49.8:
+            v = 0.0
+            omega = 0.0
+            
+        # 6. Publikasikan perintah
+        twist_msg = Twist()
+        twist_msg.linear.x = v
+        twist_msg.angular.z = omega
+        self.cmd_pub.publish(twist_msg)
+        
+        self.get_logger().info(f'y_err: {y_error:.2f}, s: {s:.2f}, ω: {omega:.2f}')
 
     def stop_robot(self):
-        """Stops the robot by publishing zero velocities to /cmd_vel."""
-        stop_cmd = Twist()
-        stop_cmd.linear.x = 0.0
-        stop_cmd.angular.z = 0.0
-        self.cmd_pub.publish(stop_cmd)
-        self.get_logger().info('Robot stopped.')
+        self.get_logger().info('Sending stop command to robot.')
+        stop_msg = Twist()
+        stop_msg.linear.x = 0.0
+        stop_msg.angular.z = 0.0
+        self.cmd_pub.publish(stop_msg)
 
 def main(args=None):
+    # --- INI ADALAH POLA MAIN YANG SUDAH BENAR DAN STANDAR ---
     rclpy.init(args=args)
     
-    # Initialize the SMC controller node
-    smc_tracker_node = SMCController()
+    smc_controller_node = SmcControllerNode()
     
     try:
-        # Keep the node alive and handle callbacks
-        rclpy.spin(smc_tracker_node)
+        rclpy.spin(smc_controller_node)
+    except KeyboardInterrupt:
+        # Ini akan dieksekusi saat Anda menekan Ctrl+C
+        smc_controller_node.get_logger().info('Keyboard interrupt, stopping robot...')
     finally:
-        # Make sure the robot stops safely when the node is destroyed
-        smc_tracker_node.stop_robot()  # This calls the stop_robot() method to stop the robot
-        smc_tracker_node.destroy_node()
-        
-        if rclpy.ok():
-            rclpy.shutdown()
+        # Pastikan robot berhenti dan node dihancurkan dengan benar
+        smc_controller_node.stop_robot()
+        smc_controller_node.destroy_node()
+        rclpy.shutdown()
 
 if __name__ == '__main__':
     main()
+
+# import rclpy
+# from rclpy.node import Node
+# from geometry_msgs.msg import Twist
+# from sensor_msgs.msg import Imu
+# from nav_msgs.msg import Odometry
+# import math
+# import numpy as np
+
+# class SMCController(Node):
+#     def __init__(self):
+#         super().__init__('smc_trajectory_tracker')
+        
+#         # If you are using this parameter later in the code:
+#         use_sim_time = self.get_parameter('use_sim_time').get_parameter_value().bool_value
+
+#         # Parameters for the Sliding Mode Control
+#         self.k1 = 1.0  # Control gain for position error (x)
+#         self.k2 = 1.0  # Control gain for position error (y)
+#         self.k3 = 1.0  # Control gain for orientation error (theta)
+#         self.target_x = 15.0  # Target x position
+#         self.target_y = 0.0  # Target y position
+#         self.target_theta = 0.0  # Target orientation (heading)
+
+#         # Robot's initial position and orientation
+#         self.x = 0.0
+#         self.y = 0.0
+#         self.theta = 0.0
+
+#         # Subscribe to Odometry to get the robot's position
+#         self.odom_sub = self.create_subscription(Odometry, '/diff_drive_controller/odom', self.odom_callback, 10)
+
+#         # Subscribe to IMU data to get robot's heading (yaw)
+#         self.imu_sub = self.create_subscription(Imu, '/imu/data', self.imu_callback, 10)
+
+#         # Publisher for robot's control commands (linear velocity and angular velocity)
+#         self.cmd_pub = self.create_publisher(Twist, '/cmd_vel', 10)
+
+#         # Timer to periodically compute control commands
+#         self.timer = self.create_timer(0.1, self.control_loop)  # 10 Hz control loop
+   
+#     def odom_callback(self, msg: Odometry):
+#         """Callback function for Odometry data to get the robot's position."""
+#         self.x = msg.pose.pose.position.x  # Update x position from Odometry
+#         self.y = msg.pose.pose.position.y  # Update y position from Odometry
+#         self.get_logger().info(f"Position (x, y): ({self.x}, {self.y})")
+
+#     def imu_callback(self, msg: Imu):
+#         q = msg.orientation
+#         _, _, yaw = self.euler_from_quaternion(q)
+#         self.theta = math.atan2(math.sin(yaw), math.cos(yaw))  # normalisasi
+
+#     def euler_from_quaternion(self, q):
+#         x, y, z, w = q.x, q.y, q.z, q.w
+#         sinr_cosp = 2 * (w * x + y * z)
+#         cosr_cosp = 1 - 2 * (x * x + y * y)
+#         roll = np.arctan2(sinr_cosp, cosr_cosp)
+
+#         sinp = 2 * (w * y - z * x)
+#         pitch = np.arcsin(sinp)
+
+#         siny_cosp = 2 * (w * z + x * y)
+#         cosy_cosp = 1 - 2 * (y * y + z * z)
+#         yaw = np.arctan2(siny_cosp, cosy_cosp)
+
+#         return roll, pitch, yaw
+
+#     def control_loop(self):
+#         # Hitung error posisi dan orientasi
+#         dx = self.target_x - self.x
+#         dy = self.target_y - self.y
+#         distance_to_target = math.hypot(dx, dy)
+#         desired_theta = math.atan2(dy, dx)
+#         e_theta = desired_theta - self.theta
+#         e_theta = math.atan2(math.sin(e_theta), math.cos(e_theta))  # normalisasi
+#         # # Perhitungan jarak ke target (pindah ke awal fungsi)
+#         # distance_to_target = math.sqrt((self.target_x - self.x)**2 + (self.target_y - self.y)**2)
+
+#         # Cek jika sudah dekat dengan target
+#         if distance_to_target < 0.1:
+#             control_input = Twist()
+#             control_input.linear.x = 0.0
+#             control_input.angular.z = 0.0
+#             self.cmd_vel_pub.publish(control_input)
+#             self.get_logger().info('Robot stopped.')
+#             return  # Keluar dari fungsi agar tidak lanjut ke bawah
+        
+#         """Main control loop for the Sliding Mode Control."""
+#         # Compute errors in position and orientation
+#         e_x = self.target_x - self.x
+#         e_y = self.target_y - self.y
+#         e_theta = self.target_theta - self.theta
+
+#         # Ensure the error is within a valid range (e.g., keep yaw errors within -pi to pi)
+#         if e_theta > math.pi:
+#             e_theta -= 2 * math.pi
+#         elif e_theta < -math.pi:
+#             e_theta += 2 * math.pi
+
+#         # Compute the sliding mode control input (linear velocity and angular velocity)
+#         s = self.k1 * e_x + self.k2 * e_y + self.k3 * e_theta
+
+#         # Control law to suppress chattering using a saturation function
+#         control_input = Twist()
+
+#         # For straight-line movement, we primarily use the linear velocity
+#         control_input.linear.x = 0.7  # Move forward at a constant speed (adjust as needed)
+#         control_input.angular.z = self.k3 * e_theta  # Rotate to correct yaw error
+
+#         # Apply the control input
+#         self.cmd_pub.publish(control_input)
+#         self.get_logger().info(f"Publishing to /cmd_vel: Linear Velocity: {control_input.linear.x}, Angular Velocity: {control_input.angular.z}")
+
+#         # Calculate the distance to the target
+#         distance_to_target = math.sqrt((self.target_x - self.x)**2 + (self.target_y - self.y)**2)
+
+#         # Print position, errors, yaw (heading), and distance to target
+#         # self.get_logger().info(f"Position (x, y): ({self.x}, {self.y})")
+#         # self.get_logger().info(f"IMU Yaw (theta): {self.theta}")
+#         # self.get_logger().info(f"Orientation error (theta): {e_theta}")
+#         # self.get_logger().info(f"Distance to target: {distance_to_target}")
+#         self.get_logger().info(f"Posisi       : ({self.x:.2f}, {self.y:.2f})")
+#         self.get_logger().info(f"Yaw (rad)    : {self.theta:.2f} rad")
+#         self.get_logger().info(f"Yaw (deg)    : {math.degrees(self.theta):.2f}°")
+#         self.get_logger().info(f"Jarak ke goal: {distance_to_target:.2f} m")
+#         self.get_logger().info(f"Error theta  : {e_theta:.2f} rad / {math.degrees(e_theta):.2f}°")
+#         self.get_logger().info(f"Control Commands: Linear Velocity: {control_input.linear.x}, Angular Velocity: {control_input.angular.z}")
+
+#         # Check if the robot is close enough to the target, and stop it
+#         if distance_to_target < 0.1:  # If the robot is within 0.1 meters of the target
+#             self.stop_robot()  # Stop the robot
+#             self.get_logger().info("Robot has reached the target and is stopping.")
+
+
+#     def stop_robot(self):
+#         """Stops the robot by publishing zero velocities to /cmd_vel."""
+#         stop_cmd = Twist()
+#         stop_cmd.linear.x = 0.0
+#         stop_cmd.angular.z = 0.0
+#         self.cmd_pub.publish(stop_cmd)
+#         self.get_logger().info('Robot stopped.')
+
+# def main(args=None):
+#     rclpy.init(args=args)
+    
+#     # Initialize the SMC controller node
+#     smc_tracker_node = SMCController()
+    
+#     try:
+#         # Keep the node alive and handle callbacks
+#         rclpy.spin(smc_tracker_node)
+#     finally:
+#         # Make sure the robot stops safely when the node is destroyed
+#         smc_tracker_node.stop_robot()  # This calls the stop_robot() method to stop the robot
+#         smc_tracker_node.destroy_node()
+        
+#         if rclpy.ok():
+#             rclpy.shutdown()
+
+# if __name__ == '__main__':
+#     main()
+
+
+
 
 
 
