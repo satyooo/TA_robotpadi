@@ -1,7 +1,9 @@
 /home/satyo03/TA_robotpadi/install/robotpadi/share/robotpadi//launch/rsp.launch.py
 /home/satyo03/TA_robotpadi/install/robotpadi/share/robotpadi//launch/robot_sim.launch.py
+/home/satyo03/TA_robotpadi/install/robotpadi/share/robotpadi//launch/robot_localization.launch.py
 /home/satyo03/TA_robotpadi/install/robotpadi/share/robotpadi//launch/teleop_joy.launch.py
 /home/satyo03/TA_robotpadi/install/robotpadi/share/robotpadi//config/diff_drive_controller.yaml
+/home/satyo03/TA_robotpadi/install/robotpadi/share/robotpadi//config/ekf.yaml
 /home/satyo03/TA_robotpadi/install/robotpadi/share/robotpadi//config/teleop_joystick.yaml
 /home/satyo03/TA_robotpadi/install/robotpadi/share/robotpadi//config/twist_mux.yaml
 /home/satyo03/TA_robotpadi/install/robotpadi/share/robotpadi//worlds/worlds.sdf

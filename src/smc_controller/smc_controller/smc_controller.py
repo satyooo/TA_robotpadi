@@ -22,13 +22,18 @@ class SmcControllerNode(Node):
         
         use_sim_time = self.get_parameter('use_sim_time').get_parameter_value().bool_value
         # --- Parameter Kontrol (BISA ANDA TUNE) ---
+        # self.V_CONSTANT = 1.0  # Kecepatan linear konstan (m/s)
+        # self.Ky = 2.0          # Gain untuk error 'y'
+        # self.K_omega = 0.5     # Gain switching untuk 'omega'
+        # self.PHI = 0.5         # Boundary layer untuk fungsi sat()
+
         self.V_CONSTANT = 1.0  # Kecepatan linear konstan (m/s)
-        self.Ky = 2.0          # Gain untuk error 'y'
-        self.K_omega = 0.5     # Gain switching untuk 'omega'
+        self.Ky = 4.0          # Gain untuk error 'y'
+        self.K_omega = 1.0     # Gain switching untuk 'omega'
         self.PHI = 0.5         # Boundary layer untuk fungsi sat()
 
         # --- State & Target ---
-        self.initial_x = 20.0
+        self.initial_x = 10.0
         self.initial_y = 0.0
 
         # Inisialisasi posisi saat ini dengan posisi awal
@@ -40,7 +45,7 @@ class SmcControllerNode(Node):
         self.final_target_x = None
 
         # --- Subscribers & Publisher ---
-        self.odom_sub = self.create_subscription(Odometry, '/diff_drive_controller/odom', self.odom_callback, 10)
+        self.odom_sub = self.create_subscription(Odometry, '/odometry/filtered', self.odom_callback, 10)
         self.imu_sub = self.create_subscription(Imu, '/imu/data', self.imu_callback, 10)
         self.path_sub = self.create_subscription(Path, '/line_trajectory', self.path_callback, 10)  # Path subscriber
         self.cmd_pub = self.create_publisher(Twist, '/cmd_vel', 10)
@@ -50,10 +55,8 @@ class SmcControllerNode(Node):
         self.get_logger().info('SMC Controller Node has been started.')
 
     def odom_callback(self, msg):
-        odom_x = msg.pose.pose.position.x
-        odom_y = msg.pose.pose.position.y
-        self.current_x = self.initial_x + odom_x
-        self.current_y = self.initial_y + odom_y
+        self.current_x = msg.pose.pose.position.x # <<< UBAH INI
+        self.current_y = msg.pose.pose.position.y # <<< UBAH INI
 
     def imu_callback(self, msg):
         self.current_theta = euler_from_quaternion(msg.orientation)

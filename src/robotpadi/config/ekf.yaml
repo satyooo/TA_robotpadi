@@ -1,0 +1,58 @@
+ekf_filter_node:
+  ros__parameters:
+    # Frekuensi update filter dalam Hz. 30 Hz adalah nilai yang baik.
+    frequency: 30.0
+
+    # Aktifkan mode 2D. Ini sangat penting untuk robot di permukaan datar.
+    # Filter akan mengabaikan variabel z, roll, dan pitch, menyederhanakan perhitungan
+    # dan meningkatkan stabilitas.
+    two_d_mode: true
+
+    # --- NAMA FRAME KOORDINAT ---
+    # Frame dunia, biasanya "odom" atau "map". Untuk sekarang kita gunakan "odom".
+    odom_frame: odom
+    # Frame dasar robot Anda.
+    base_link_frame: base_link
+    # Frame dunia yang akan dipublikasikan oleh filter.
+    world_frame: odom
+
+    # --- KONFIGURASI SENSOR 1: ODOMETRI RODA ---
+    odom0: /diff_drive_controller/odom
+    
+    # Matriks konfigurasi untuk odom0. Menentukan variabel mana yang akan digunakan.
+    # Format: [X, Y, Z, Roll, Pitch, Yaw, Vx, Vy, Vz, Vroll, Vpitch, Vyaw]
+    # Vx, Vy = Kecepatan linear. Vyaw = Kecepatan sudut.
+    # Kita hanya menggunakan kecepatan, bukan posisi, dari odometri roda.
+    odom0_config: [false, false, false,
+                   false, false, false,
+                   true,  true,  false,
+                   false, false, true]
+    
+    # Set ke false karena odometri roda biasanya memberikan kecepatan absolut, bukan diferensial.
+    odom0_differential: false
+
+    # --- KONFIGURASI SENSOR 2: IMU ---
+    imu0: /imu/data
+
+    # Matriks konfigurasi untuk imu0.
+    # Kita menggunakan orientasi (roll, pitch, yaw) dan kecepatan sudut dari IMU.
+    # Kita TIDAK menggunakan akselerasi linear karena sangat bernoise.
+    imu0_config: [false, false, false,
+                  true,  true,  true,
+                  false, false, false,
+                  true,  true,  true,
+                  false, false, false]
+
+    # Set ke false karena IMU memberikan orientasi absolut.
+    imu0_differential: false
+
+    # Penting! Ini akan mengabaikan efek gravitasi dari pembacaan akselerasi IMU.
+    imu0_remove_gravitational_acceleration: true
+
+    # --- PENGATURAN LAINNYA ---
+    # Output hasil fusi sebagai pesan Odometry ke topik ini.
+    publish_tf: true
+
+    # Variabel proses noise covariance. Nilai default biasanya sudah cukup baik.
+    process_noise_covariance: [ ... (nilai default bisa dibiarkan) ... ]
+    initial_estimate_covariance: [ ... (nilai default bisa dibiarkan) ... ]

@@ -83,5 +83,71 @@
       <uri>model://sand_heightmap</uri>
     </include>
 
+    <model name='batu1'>
+      <static>true</static> <pose>13 0.7 0.1 1.2 0 -0.6</pose>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.7 0.7 0.5</size> </box>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <box>
+              <size>0.5 0.5 0.5</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.54 0.27 0.07 1</ambient>
+            <diffuse>0.54 0.27 0.07 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name='batu2'>
+      <static>true</static> <pose>17 0.7 0.1 1.2 0 -0.6</pose>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.8 0.7 0.5</size> </box>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <box>
+              <size>0.5 0.5 0.5</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.54 0.27 0.07 1</ambient>
+            <diffuse>0.54 0.27 0.07 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name='batu3'>
+      <static>true</static> <pose>23 -0.7 0.1 -1.2 0 0.6</pose>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.7 0.7 0.5</size> </box>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <box>
+              <size>0.5 0.5 0.5</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.54 0.27 0.07 1</ambient>
+            <diffuse>0.54 0.27 0.07 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
   </world>
 </sdf>

@@ -11,11 +11,11 @@ class CoordinatePublisher(Node):
         
         # --- PERUBAHAN DIMULAI ---
         # Siapkan data yang akan dipublikasikan
-        self.coordinates = [[float(x), 0.0] for x in range(20, 41)]
+        self.coordinates = [[float(x), 0.0] for x in range(10, 41)]
         self.current_index = 0
         
         # Buat timer yang memanggil fungsi callback secara berkala
-        timer_period = 0.2  # detik (misalnya, publikasikan 5 koordinat per detik)
+        timer_period = 0.1  # detik (misalnya, publikasikan 10 koordinat per detik)
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.get_logger().info('CoordinatePublisher node started. Publishing coordinates periodically.')
         # --- PERUBAHAN SELESAI ---

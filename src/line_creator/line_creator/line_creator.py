@@ -23,8 +23,8 @@ class LineCreator(Node):
         self.get_logger().info(f"Received coordinate: x={msg.x}, y={msg.y}, z={msg.z}")
         # Menyimpan titik yang diterima dari coordinate_publisher
         self.coordinates.append([msg.x, msg.y, msg.z])
-        
-        if len(self.coordinates) == 21:  # Jika sudah ada 21 titik
+
+        if len(self.coordinates) == 31:  # Jika sudah ada 31 titik
             self.publish_trajectory()
             self.get_logger().info(f"All coordinates received: {self.coordinates}")
 
@@ -32,13 +32,13 @@ class LineCreator(Node):
         # Membuat objek Path
         path_msg = Path()
         path_msg.header.stamp = self.get_clock().now().to_msg()  # Timestamp saat ini
-        path_msg.header.frame_id = "map"  # Frame referensi, bisa disesuaikan
+        path_msg.header.frame_id = "odom"  # Frame referensi, bisa disesuaikan
         
         # Menambahkan PoseStamped untuk setiap titik dalam koordinat
         for coord in self.coordinates:
             pose_stamped = PoseStamped()
             pose_stamped.header.stamp = self.get_clock().now().to_msg()  # Timestamp untuk setiap pose
-            pose_stamped.header.frame_id = "map"  # Frame referensi untuk pose
+            pose_stamped.header.frame_id = "odom"  # Frame referensi untuk pose
             pose_stamped.pose.position.x = coord[0]
             pose_stamped.pose.position.y = coord[1]
             pose_stamped.pose.position.z = coord[2]
