@@ -13,12 +13,12 @@ class LurusTrajectoryPublisher(Node):
         self.timer = self.create_timer(1.0, self.publish_trajectory)  # Publikasi setiap 1 detik
 
         # Titik awal robot (x, y)
-        self.start_position = (20.0, 0.0)  # posisi mulai di x=20, y=0
+        self.start_position = (0.0, 0.0)  # posisi mulai di x=0, y=0
         self.distance = 20.0  # Trajectory sepanjang 20 meter ke arah sumbu X
         self.step_size = 0.5  # Langkah per titik (setiap 0.5 meter)
         
         # Menghasilkan posisi titik di sepanjang sumbu x
-        self.trajectory = [(self.start_position[0] + i * self.step_size, self.start_position[1], 0.0) 
+        self.trajectory = [(self.start_position[0] + i * self.step_size, self.start_position[1] + i * self.step_size, 0.0) 
                            for i in range(int(self.distance / self.step_size) + 1)]
         
         self.current_index = 0  # Untuk melacak titik saat ini di trajectory
