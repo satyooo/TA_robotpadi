@@ -13,7 +13,7 @@ class LurusTrajectoryPublisher(Node):
         self.timer = self.create_timer(1.0, self.publish_trajectory)  # Publikasi setiap 1 detik
 
         # Titik awal robot (x, y)
-        self.start_position = (0.0, 0.0)  # posisi mulai di x=0, y=0
+        self.start_position = (20.0, 0.0)  # posisi mulai di x=0, y=0
         self.distance = 20.0  # Trajectory sepanjang 20 meter ke arah sumbu X
         self.step_size = 0.5  # Langkah per titik (setiap 0.5 meter)
         
@@ -22,6 +22,7 @@ class LurusTrajectoryPublisher(Node):
                            for i in range(int(self.distance / self.step_size) + 1)]
         
         self.current_index = 0  # Untuk melacak titik saat ini di trajectory
+        self.last_point = self.trajectory[-1]
 
     def publish_trajectory(self):
         if self.current_index < len(self.trajectory):
@@ -29,9 +30,12 @@ class LurusTrajectoryPublisher(Node):
             pose.header = Header()
             pose.header.stamp = self.get_clock().now().to_msg()
             pose.header.frame_id = 'odom'  # Sesuaikan dengan frame robot
-            pose.pose.position.x = self.trajectory[self.current_index][0]
-            pose.pose.position.y = self.trajectory[self.current_index][1]
-            pose.pose.position.z = self.trajectory[self.current_index][2]
+            # pose.pose.position.x = self.trajectory[self.current_index][0]
+            # pose.pose.position.y = self.trajectory[self.current_index][1]
+            # pose.pose.position.z = self.trajectory[self.current_index][2]
+            pose.pose.position.x = self.last_point[0]
+            pose.pose.position.y = self.last_point[1]
+            pose.pose.position.z = self.last_point[2]
 
             self.publisher.publish(pose)
             self.get_logger().info(f'Publishing trajectory point: {pose.pose.position.x}, {pose.pose.position.y}')
