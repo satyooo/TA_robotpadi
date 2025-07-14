@@ -58,7 +58,7 @@ class LineCreator(Node):
     def publish_cmd(self):
         # Membuat objek Bool
         path_msga = Int32()
-        path_msga.bool = 1
+        path_msga.int32 = 1
         self.publisher_RStart.publish(path_msga)
 
 def main(args=None):
