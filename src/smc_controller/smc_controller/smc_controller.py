@@ -8,7 +8,7 @@ from geometry_msgs.msg import Twist
 import math
 import numpy as np
 from nav_msgs.msg import Path
-
+# woy sidang
 
 def euler_from_quaternion(quaternion):
     # ... (fungsi konversi dari respons sebelumnya) ...
