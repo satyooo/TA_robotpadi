@@ -8,7 +8,7 @@ from geometry_msgs.msg import Twist
 import math
 import numpy as np
 from nav_msgs.msg import Path
-from std_msgs.msg import Bool
+from std_msgs.msg import Int32
 # woy sidang
 
 def euler_from_quaternion(quaternion):
@@ -49,7 +49,7 @@ class SmcControllerNode(Node):
         self.odom_sub = self.create_subscription(Odometry, '/diff_drive_controller/odom', self.odom_callback, 100)
         self.imu_sub = self.create_subscription(Imu, '/imu/data', self.imu_callback, 100)
         self.path_sub = self.create_subscription(Path, '/line_trajectory', self.path_callback, 100)  # Path subscriber
-        self.start_cmd = self.create_subscription(Bool, '/start_cmd', self.start_callback, 10)
+        self.start_cmd = self.create_subscription(Int32, '/start_cmd', self.start_callback, 10)
         self.cmd_pub = self.create_publisher(Twist, '/cmd_vel', 10)
 
         # --- Loop Kontrol ---
@@ -71,7 +71,7 @@ class SmcControllerNode(Node):
 
     def path_callback(self, msg):
         # <<< MODIFIKASI 2: Buka gerbang saat path diterima dan simpan titik akhir >>>
-        if msg.poses and self.trajectory_received == True:
+        if msg.poses and self.trajectory_received == 1:
             # Ambil koordinat x dari pose terakhir dalam path
             self.final_target_x = msg.poses[-1].pose.position.x
             # self.trajectory_received = True # Buka gerbang!
@@ -96,7 +96,7 @@ class SmcControllerNode(Node):
         else: return s / phi
 
     def control_loop(self):
-        if self.trajectory_received == True:
+        if self.trajectory_received == 1:
             return
     
         # Target untuk garis lurus y=0
