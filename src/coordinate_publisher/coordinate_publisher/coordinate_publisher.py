@@ -11,7 +11,7 @@ class CoordinatePublisher(Node):
         
         # --- PERUBAHAN DIMULAI ---
         # Siapkan data yang akan dipublikasikan
-        self.coordinates = [[float(x), 0.0] for x in range(10, 31)]
+        self.coordinates = [[float(x), 0.0] for x in range(0, 31)]
         self.current_index = 0
         
         # Buat timer yang memanggil fungsi callback secara berkala
