@@ -12,7 +12,7 @@ ekf_filter_node:
     # Frame dunia, biasanya "odom" atau "map". Untuk sekarang kita gunakan "odom".
     odom_frame: odom
     # Frame dasar robot Anda.
-    base_link_frame: base_link
+    base_link_frame: base_footprint
     # Frame dunia yang akan dipublikasikan oleh filter.
     world_frame: odom
 
@@ -53,6 +53,4 @@ ekf_filter_node:
     # Output hasil fusi sebagai pesan Odometry ke topik ini.
     publish_tf: true
 
-    # Variabel proses noise covariance. Nilai default biasanya sudah cukup baik.
-    process_noise_covariance: [ ... (nilai default bisa dibiarkan) ... ]
-    initial_estimate_covariance: [ ... (nilai default bisa dibiarkan) ... ]
+  

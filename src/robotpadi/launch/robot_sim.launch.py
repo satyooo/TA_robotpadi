@@ -14,7 +14,7 @@ def generate_launch_description():
     # --- Konfigurasi Umum ---
     pkg_project_name = 'robotpadi' 
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
-    pkg_share = get_package_share_directory('robotpadi')
+    
     # --- Path ke File & Direktori ---
     pkg_path = get_package_share_directory(pkg_project_name)
     pkg_ros_gz_sim = get_package_share_directory('ros_gz_sim')
@@ -28,12 +28,16 @@ def generate_launch_description():
     rviz_file = os.path.join(pkg_path, 'rviz', 'view.rviz')
 
     # Include launch file untuk EKF
-    localization_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(pkg_share, 'launch', 'robot_localization.launch.py')
-        )
-    )
-
+    # Panggil launch file dari paket robot_localization_bringup
+    # localization_launch = IncludeLaunchDescription(
+    #     PythonLaunchDescriptionSource(
+    #         os.path.join(
+    #             get_package_share_directory('robot_localization_bringup'), # <-- Nama paket baru
+    #             'launch',
+    #             'localization.launch.py'
+    #         )
+    #     )
+    # )
     # --- 1. Set Environment Variable untuk Gazebo ---
     set_env_vars = SetEnvironmentVariable(
     name='GZ_SIM_RESOURCE_PATH',
@@ -194,7 +198,7 @@ def generate_launch_description():
         gz_sim,
         robot_state_publisher,
         gz_ros_bridge,
-        
+        # localization_launch,  # Include EKF localization
         # Spawn robot ke dalam Gazebo
         spawn_robot,
         
@@ -204,7 +208,7 @@ def generate_launch_description():
         smc_controller_node,
         coordinate_publisher_node,
         line_creator_node,
-        localization_launch,  # Launch EKF node
+        
 
         # --- JALANKAN SPAWNER SECARA LANGSUNG ---
         # Spawner ini akan otomatis menunggu Controller Manager siap

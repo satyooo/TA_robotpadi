@@ -4,21 +4,21 @@ from launch import LaunchDescription
 from launch_ros.actions import Node
 
 def generate_launch_description():
-    # Mendapatkan path ke direktori share paket Anda
-    pkg_share = get_package_share_directory('robotpadi')
+    # Mendapatkan path ke direktori share dari paket INI
+    pkg_share = get_package_share_directory('robot_localization_bringup')
 
     # Mendapatkan path lengkap ke file konfigurasi ekf.yaml
     config_file = os.path.join(pkg_share, 'config', 'ekf.yaml')
 
     # Membuat node untuk robot_localization (EKF)
-    ekf_node = Node(
+    start_robot_localization_node = Node(
         package='robot_localization',
         executable='ekf_node',
         name='ekf_filter_node',
         output='screen',
-        parameters=[config_file]  # Memuat parameter dari file YAML
+        parameters=[config_file, {'use_sim_time': True}]    
     )
 
     return LaunchDescription([
-        ekf_node
+        start_robot_localization_node
     ])
