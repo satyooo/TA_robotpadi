@@ -5,7 +5,7 @@ from rclpy.node import Node
 from geometry_msgs.msg import Point, PoseStamped
 from nav_msgs.msg import Path
 from builtin_interfaces.msg import Time
-from std_msgs.msg import Bool
+from std_msgs.msg import Int32
 
 class LineCreator(Node):
     def __init__(self):
@@ -17,7 +17,7 @@ class LineCreator(Node):
             10
         )
         self.publisher_ = self.create_publisher(Path, '/line_trajectory', 100)  # Topik trajektori
-        self.publisher_RStart = self.create_publisher(Bool, '/start_cmd', 100)  # Topik start robot
+        self.publisher_RStart = self.create_publisher(Int32, '/start_cmd', 100)  # Topik start robot
         self.coordinates = []
         self.get_logger().info("LineCreator node started and subscribed to coordinates.")
 
@@ -56,8 +56,8 @@ class LineCreator(Node):
 
     def publish_cmd(self):
         # Membuat objek Bool
-        path_msga = Bool()
-        path_msga.bool = True
+        path_msga = Int32()
+        path_msga.bool = 1
         self.publisher_RStart.publish(path_msga)
 
 def main(args=None):
