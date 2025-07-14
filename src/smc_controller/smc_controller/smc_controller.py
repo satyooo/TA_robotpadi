@@ -96,8 +96,8 @@ class SmcControllerNode(Node):
         else: return s / phi
 
     def control_loop(self):
-        if self.trajectory_received == 1:
-            return
+        # if self.trajectory_received == 1 & "pencet huruf w di cmd":
+        #     return
     
         # Target untuk garis lurus y=0
         y_d = 0.0
