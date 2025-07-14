@@ -28,6 +28,7 @@ class LineCreator(Node):
 
         if len(self.coordinates) == 21:  # Jika sudah ada 31 titik
             self.publish_trajectory()
+            self.publish_cmd()
             self.get_logger().info(f"All coordinates received: {self.coordinates}")
 
     def publish_trajectory(self):
