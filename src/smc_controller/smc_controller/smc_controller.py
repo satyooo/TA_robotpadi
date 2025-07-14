@@ -8,6 +8,7 @@ from geometry_msgs.msg import Twist
 import math
 import numpy as np
 from nav_msgs.msg import Path
+from std_msgs.msg import Bool
 # woy sidang
 
 def euler_from_quaternion(quaternion):
@@ -41,13 +42,14 @@ class SmcControllerNode(Node):
         self.current_y = self.initial_y
         self.current_theta = 2.0
 
-        self.trajectory_received = False
+        # self.trajectory_received = False
         self.final_target_x = None
 
         # --- Subscribers & Publisher ---
         self.odom_sub = self.create_subscription(Odometry, '/diff_drive_controller/odom', self.odom_callback, 10)
         self.imu_sub = self.create_subscription(Imu, '/imu/data', self.imu_callback, 10)
         self.path_sub = self.create_subscription(Path, '/line_trajectory', self.path_callback, 10)  # Path subscriber
+        self.start_cmd = self.create_subscription(Bool, '/start_cmd', self.start_callback, 10)
         self.cmd_pub = self.create_publisher(Twist, '/cmd_vel', 10)
 
         # --- Loop Kontrol ---
@@ -69,11 +71,16 @@ class SmcControllerNode(Node):
 
     def path_callback(self, msg):
         # <<< MODIFIKASI 2: Buka gerbang saat path diterima dan simpan titik akhir >>>
-        if msg.poses and not self.trajectory_received:
+        if msg.poses and self.trajectory_received == True:
             # Ambil koordinat x dari pose terakhir dalam path
             self.final_target_x = msg.poses[-1].pose.position.x
-            self.trajectory_received = True # Buka gerbang!
+            # self.trajectory_received = True # Buka gerbang!
             self.get_logger().info(f"Trajectory received with {len(msg.poses)} points. Final target x: {self.final_target_x}. Starting control.")
+
+    def start_callback(self, msg):
+        # if si start = True, start robot
+        data_cmd = msg.bool
+        self.trajectory_received = data_cmd
 
     # def path_callback(self, msg):
     #     # Ambil titik pertama dari path
@@ -89,7 +96,7 @@ class SmcControllerNode(Node):
         else: return s / phi
 
     def control_loop(self):
-        if not self.trajectory_received:
+        if self.trajectory_received == True:
             return
     
         # Target untuk garis lurus y=0
