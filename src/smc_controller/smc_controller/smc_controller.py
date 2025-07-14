@@ -46,9 +46,9 @@ class SmcControllerNode(Node):
         self.final_target_x = None
 
         # --- Subscribers & Publisher ---
-        self.odom_sub = self.create_subscription(Odometry, '/diff_drive_controller/odom', self.odom_callback, 10)
-        self.imu_sub = self.create_subscription(Imu, '/imu/data', self.imu_callback, 10)
-        self.path_sub = self.create_subscription(Path, '/line_trajectory', self.path_callback, 10)  # Path subscriber
+        self.odom_sub = self.create_subscription(Odometry, '/diff_drive_controller/odom', self.odom_callback, 100)
+        self.imu_sub = self.create_subscription(Imu, '/imu/data', self.imu_callback, 100)
+        self.path_sub = self.create_subscription(Path, '/line_trajectory', self.path_callback, 100)  # Path subscriber
         self.start_cmd = self.create_subscription(Bool, '/start_cmd', self.start_callback, 10)
         self.cmd_pub = self.create_publisher(Twist, '/cmd_vel', 10)
 

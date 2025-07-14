@@ -16,8 +16,8 @@ class LineCreator(Node):
             self.listener_callback,
             10
         )
-        self.publisher_ = self.create_publisher(Path, '/line_trajectory', 10)  # Topik trajektori
-        self.publisher_RStart = self.create_publisher(Bool, '/start_cmd', 10)  # Topik start robot
+        self.publisher_ = self.create_publisher(Path, '/line_trajectory', 100)  # Topik trajektori
+        self.publisher_RStart = self.create_publisher(Bool, '/start_cmd', 100)  # Topik start robot
         self.coordinates = []
         self.get_logger().info("LineCreator node started and subscribed to coordinates.")
 
